@@ -160,10 +160,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
     
        --take a screenshot of entire display 
-   , ((modm , xK_Print ), spawn "scrot screen_%Y-%m-%d-%H-%M-%S.png -d 1")
+   , ((modm , xK_grave ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
+
+       --take a screenshot of entire display 
+   , ((modm , xK_Print ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
 
    --take a screenshot of focused window 
-   , ((modm .|. controlMask, xK_Print ), spawn "scrot window_%Y-%m-%d-%H-%M-%S.png -d 1-u")
+   , ((modm .|. controlMask, xK_Print ), spawn "scrot ~/screens/window_%Y-%m-%d-%H-%M-%S.png -d 1-u")
 
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
@@ -233,7 +236,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- which denotes layout choice.
 --
 -- myLayout = Mag.magnifier (Tall 1 (3/100) (1/2)) ||| tiled ||| Mirror tiled ||| Full
-myLayout = tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| tiled ||| Mirror tiled ||| Full
+myLayout = Mirror tiled ||| tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| Full
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
