@@ -91,10 +91,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
  
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
+    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
 
     -- launch dmenucab (clock and battery perl script)
-    , ((modm,               xK_o     ), spawn "perl ~/dmenucab.perl > arq && dmenu < arq")
+    , ((modm,               xK_o     ), spawn "perl ~/dmenucab.perl > arq && dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-* < arq")
  
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
