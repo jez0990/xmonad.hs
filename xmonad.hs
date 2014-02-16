@@ -22,6 +22,8 @@ import qualified XMonad.Layout.Magnifier as Mag
 import XMonad.Layout.ThreeColumns 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ICCCMFocus
  
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -89,6 +91,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
  
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+
+    -- launch a terminal
+    , ((modm .|. shiftMask, xK_Tab), spawn $ XMonad.terminal conf)
  
     -- launch dmenu
     , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
@@ -154,7 +159,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
  
     -- Quit xmonad
-    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    , ((modm .|. shiftMask, xK_Escape     ), io (exitWith ExitSuccess))
  
     -- Restart xmonad========
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
@@ -297,7 +302,8 @@ myEventHook = mempty
 -- It will add EWMH logHook actions to your custom log hook by
 -- combining it with ewmhDesktopsLogHook.
 --
-myLogHook = return ()
+-- myLogHook = return ()
+myLogHook = takeTopFocus >> setWMName "LG3D" -- fix java Bug, for FreePlane!
  
 ------------------------------------------------------------------------
 -- Startup hook
@@ -314,6 +320,8 @@ myLogHook = return ()
 -- hook by combining it with ewmhDesktopsStartup.
 --
 myStartupHook = return ()
+-- myStartupHook = takeTopFocus >> setWMName "LG3D" -- fix java Bug, for FreePlane!
+-- myStartupHook = setWMName "LG3D" -- fix java Bug, for FreePlane!
  
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
