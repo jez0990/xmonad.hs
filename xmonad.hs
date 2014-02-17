@@ -24,6 +24,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ICCCMFocus
+import XMonad.Layout.NoBorders
  
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -241,7 +242,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- which denotes layout choice.
 --
 -- myLayout = Mag.magnifier (Tall 1 (3/100) (1/2)) ||| tiled ||| Mirror tiled ||| Full
-myLayout = Mirror tiled ||| tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| Full
+myLayout = Mirror tiled ||| tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| noBorders Full
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
