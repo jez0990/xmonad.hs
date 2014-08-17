@@ -37,7 +37,7 @@ myFocusFollowsMouse = True
  
 -- Width of the window border in pixels.
 --
-myBorderWidth   = 1
+myBorderWidth   = 3--90
  
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
@@ -82,8 +82,10 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
  
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#000000"
-myFocusedBorderColor = "#0000ff"
+--myNormalBorderColor  = "#000000"
+--myFocusedBorderColor = "#0000ff"
+myNormalBorderColor  = "#000099"
+myFocusedBorderColor = "#000000"
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -97,7 +99,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_Tab), spawn $ XMonad.terminal conf)
  
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
+    , ((modm,               xK_p     ), spawn "dmenu_run -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*")
+--    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
 
     -- launch dmenucab (clock and battery perl script)
     , ((modm,               xK_o     ), spawn "perl ~/dmenucab.perl > arq && dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-* < arq")
@@ -168,12 +171,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
        --take a screenshot of entire display 
    , ((modm , xK_grave ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
 
+--   , ((modm , xK_grave ), spawn "PLAYING=`node ~/spotifysong.js`;scrot ~/\"screen_%Y-%m-%d-%H-%M-%S-$PLAYING.png\" -d 1")
+
        --take a screenshot of entire display 
    , ((modm , xK_Print ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
 
    --take a screenshot of focused window 
    , ((modm .|. controlMask, xK_Print ), spawn "scrot ~/screens/window_%Y-%m-%d-%H-%M-%S.png -d 1-u")
 
+   , ((modm , xK_F7 ), spawn "sleep 1;xset dpms force off")
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
     , ((modm .|. controlMask              , xK_minus), sendMessage Mag.MagnifyLess)
