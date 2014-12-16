@@ -29,7 +29,7 @@ import XMonad.Layout.NoBorders
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "gnome-terminal"
+myTerminal      = "gnome-terminal --disable-factory"
  
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -37,7 +37,7 @@ myFocusFollowsMouse = True
  
 -- Width of the window border in pixels.
 --
-myBorderWidth   = 3--90
+myBorderWidth   = 1--90
  
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
@@ -84,8 +84,10 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 --
 --myNormalBorderColor  = "#000000"
 --myFocusedBorderColor = "#0000ff"
-myNormalBorderColor  = "#000099"
-myFocusedBorderColor = "#000000"
+--myNormalBorderColor  = "#000099"
+--myFocusedBorderColor = "#000000"
+myNormalBorderColor  = "#000000"
+myFocusedBorderColor = "#FFFFFF"
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -163,13 +165,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
  
     -- Quit xmonad
-    , ((modm .|. shiftMask, xK_Escape     ), io (exitWith ExitSuccess))
+--    , ((modm .|. shiftMask, xK_Escape     ), io (exitWith ExitSuccess))
  
     -- Restart xmonad========
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
     
        --take a screenshot of entire display 
-   , ((modm , xK_grave ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
+   , ((modm , xK_Escape ), spawn "scrot ~/screens/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
 
 --   , ((modm , xK_grave ), spawn "PLAYING=`node ~/spotifysong.js`;scrot ~/\"screen_%Y-%m-%d-%H-%M-%S-$PLAYING.png\" -d 1")
 
