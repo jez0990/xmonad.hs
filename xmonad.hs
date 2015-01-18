@@ -189,6 +189,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. controlMask .|. shiftMask, xK_o    ), sendMessage Mag.ToggleOn   )
     , ((modm .|. controlMask              , xK_m    ), sendMessage Mag.Toggle     )
 
+    ,((0                     , 0x1008FF11), spawn "amixer set Master 2-")
+    ,((0                     , 0x1008FF13), spawn "amixer set Master 2+")
 
     ]
     ++
