@@ -25,6 +25,9 @@ import qualified Data.Map        as M
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ICCCMFocus
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Reflect
+import XMonad.Layout.Spiral
+import XMonad.Actions.CopyWindow
  
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -38,7 +41,7 @@ myFocusFollowsMouse = True
 -- Width of the window border in pixels.
 --
 myBorderWidth   = 1--90
- 
+
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
 -- ("right alt"), which does not conflict with emacs keybindings. The
@@ -78,7 +81,7 @@ myModMask       = mod1Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["1","2","3","4","5"]--,"5","6","7","8","9"]
  
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -144,10 +147,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    )
  
     -- Shrink the master area
-    , ((modm,               xK_h     ), sendMessage Shrink)
+    , ((modm,               xK_l     ), sendMessage Shrink)
  
     -- Expand the master area
-    , ((modm,               xK_l     ), sendMessage Expand)
+    , ((modm,               xK_h     ), sendMessage Expand)
  
     -- Push window back into tiling
     , ((modm,               xK_t     ), withFocused $ windows . W.sink)
@@ -165,6 +168,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
  
     -- Quit xmonad
+    , ((modm .|. shiftMask, xK_End     ), io (exitWith ExitSuccess))
 --    , ((modm .|. shiftMask, xK_Escape     ), io (exitWith ExitSuccess))
  
     -- Restart xmonad========
@@ -181,7 +185,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
    --take a screenshot of focused window 
    , ((modm .|. controlMask, xK_Print ), spawn "scrot ~/screens/window_%Y-%m-%d-%H-%M-%S.png -d 1-u")
 
-   , ((modm , xK_F7 ), spawn "sleep 1;xset dpms force off")
+   , ((modm , xK_F3 ), spawn "sleep 1;xset dpms force off")
+   , ((modm , xK_F2 ), spawn "gnome-screensaver-command -l;sleep 1;xset dpms force off")
+   , ((modm , xK_F12 ), spawn "gnome-screensaver-command --lock && dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+
+	, ((modm, xK_v ), windows copyToAll) -- @@ Make focused window always visible
+  , ((modm .|. shiftMask, xK_v ),  killAllOtherCopies) -- @@ Toggle window state back
+
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
     , ((modm .|. controlMask              , xK_minus), sendMessage Mag.MagnifyLess)
@@ -202,7 +212,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-[1..9], Move client to workspace N
     --
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_5]--xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
  
@@ -252,7 +262,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- which denotes layout choice.
 --
 -- myLayout = Mag.magnifier (Tall 1 (3/100) (1/2)) ||| tiled ||| Mirror tiled ||| Full
-myLayout = smartBorders $ Mirror tiled ||| tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) -- ||| noBorders Full
+myLayout = smartBorders $ reflectHoriz tiled ||| reflectHoriz (spiral (16/10)) ||| Mirror tiled ||| Full ||| reflectHoriz (ThreeCol 1 (3/100) (1/2)) -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
@@ -264,7 +274,7 @@ myLayout = smartBorders $ Mirror tiled ||| tiled ||| ThreeCol 1 (3/100) (1/2) ||
     ratio   = 1.3/2
  
     -- Percent of screen to increment by when resizing panes
-    delta   = 3/100
+    delta   = 2/100
  
 ------------------------------------------------------------------------
 -- Window rules:
