@@ -32,6 +32,7 @@ import XMonad.Hooks.EwmhDesktops
 -- import XMonad.Layout.Maximize
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
+import qualified XMonad.StackSet as W
  
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -202,6 +203,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 	, ((modm, xK_backslash), sendMessage $ Toggle FULL)
 --	  , ((modm, xK_backslash), withFocused (sendMessage . Toggle FULL))
+
+--  , ((modm, xK_f), withFocused $ windows . (flip W.float $ W.RationalRect 0 0 1 1))
+  , ((modm, xK_g), withFocused $ windows . (flip W.float $ W.RationalRect 0.98 (-0.65) 1 1))
 
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
