@@ -28,11 +28,15 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Reflect
 import XMonad.Layout.Spiral
 import XMonad.Actions.CopyWindow
+import XMonad.Hooks.EwmhDesktops
+-- import XMonad.Layout.Maximize
+import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle.Instances
  
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "gnome-terminal --disable-factory"
+myTerminal      = "gnome-terminal --maximize --disable-factory"
  
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -81,16 +85,16 @@ myModMask       = mod1Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5"]--,"5","6","7","8","9"]
+myWorkspaces    = ["1","2","3"]--,"4","5","6"]--,"7","8","9"]
  
 -- Border colors for unfocused and focused windows, respectively.
 --
---myNormalBorderColor  = "#000000"
+myNormalBorderColor  = "#000000"
 --myFocusedBorderColor = "#0000ff"
 --myNormalBorderColor  = "#000099"
 --myFocusedBorderColor = "#000000"
-myNormalBorderColor  = "#000000"
-myFocusedBorderColor = "#FFFFFF"
+--myNormalBorderColor  = "#444444"
+myFocusedBorderColor = "#888888"
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -138,7 +142,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_m     ), windows W.focusMaster  )
  
     -- Swap the focused window and the master window
-    , ((modm,               xK_Return), windows W.swapMaster)
+    --, ((modm,               xK_Return), windows W.swapMaster)
+    , ((modm,               xK_Home), windows W.swapMaster)
  
     -- Swap the focused window with the next window
     , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  )
@@ -185,12 +190,18 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
    --take a screenshot of focused window 
    , ((modm .|. controlMask, xK_Print ), spawn "scrot ~/screens/window_%Y-%m-%d-%H-%M-%S.png -d 1-u")
 
-   , ((modm , xK_F3 ), spawn "sleep 1;xset dpms force off")
+   , ((modm , xK_F3 ), spawn "sleep 1;xset dpms force off;~/slowkeys.sh")
    , ((modm , xK_F2 ), spawn "gnome-screensaver-command -l;sleep 1;xset dpms force off")
+   , ((modm , xK_F9 ), spawn "sudo shutdown -r 0")
    , ((modm , xK_F12 ), spawn "gnome-screensaver-command --lock && dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
 
 	, ((modm, xK_v ), windows copyToAll) -- @@ Make focused window always visible
   , ((modm .|. shiftMask, xK_v ),  killAllOtherCopies) -- @@ Toggle window state back
+
+--  , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
+
+	, ((modm, xK_backslash), sendMessage $ Toggle FULL)
+--	  , ((modm, xK_backslash), withFocused (sendMessage . Toggle FULL))
 
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
@@ -212,9 +223,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-[1..9], Move client to workspace N
     --
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_5]--xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1,xK_8,xK_9]-- .. xK_3]--xK_6]--xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
+
+--TODO need a way toggle ability to switch between 1 and 3
  
     --
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
@@ -262,7 +275,10 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- which denotes layout choice.
 --
 -- myLayout = Mag.magnifier (Tall 1 (3/100) (1/2)) ||| tiled ||| Mirror tiled ||| Full
-myLayout = smartBorders $ reflectHoriz tiled ||| reflectHoriz (spiral (16/10)) ||| Mirror tiled ||| Full ||| reflectHoriz (ThreeCol 1 (3/100) (1/2)) -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
+--myLayout = smartBorders $ tiled ||| reflectHoriz tiled ||| Mirror tiled ||| Full ||| reflectHoriz (ThreeCol 1 (1/100) (1/2)) -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
+-- myLayout = smartBorders $ reflectHoriz (ThreeCol 1 (1/100) (1/2)) ||| Full -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
+myLayout = smartBorders $ mkToggle (single FULL) $ reflectHoriz (spiral (6/10)) ||| Mirror tiled -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
+--reflectHoriz (spiral (16/10)) ||| 
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
@@ -271,7 +287,7 @@ myLayout = smartBorders $ reflectHoriz tiled ||| reflectHoriz (spiral (16/10)) |
     nmaster = 1
  
     -- Default proportion of screen occupied by master pane
-    ratio   = 1.3/2
+    ratio   = 1.8 / 2 -- 1.3/2
  
     -- Percent of screen to increment by when resizing panes
     delta   = 2/100
@@ -309,7 +325,7 @@ myManageHook = composeAll
 -- It will add EWMH event handling to your custom event hooks by
 -- combining them with ewmhDesktopsEventHook.
 --
-myEventHook = mempty
+--myEventHook = mempty
  
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -376,7 +392,9 @@ defaults = defaultConfig {
       -- hooks, layouts
         layoutHook         = myLayout,
         manageHook         = myManageHook,
-        handleEventHook    = myEventHook,
+        --handleEventHook    = myEventHook,
+				--had to comment out the myEventHook line too... all for chrome fullscreen
+        handleEventHook    = fullscreenEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook
     }
