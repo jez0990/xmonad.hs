@@ -45,7 +45,7 @@ myFocusFollowsMouse = True
  
 -- Width of the window border in pixels.
 --
-myBorderWidth   = 1--90
+myBorderWidth   = 5--90
 
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
@@ -95,7 +95,7 @@ myNormalBorderColor  = "#000000"
 --myNormalBorderColor  = "#000099"
 --myFocusedBorderColor = "#000000"
 --myNormalBorderColor  = "#444444"
-myFocusedBorderColor = "#888888"
+myFocusedBorderColor = "#0000FF"
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -113,7 +113,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 --    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
 
     -- launch dmenucab (clock and battery perl script)
-    , ((modm,               xK_o     ), spawn "perl ~/dmenucab.perl > arq && dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-* < arq")
+    , ((modm,               xK_o     ), spawn "perl ~/.xmonad/dmenucab.perl | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*")
  
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -194,7 +194,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
    , ((modm , xK_F3 ), spawn "sleep 1;xset dpms force off;~/slowkeys.sh")
    , ((modm , xK_F2 ), spawn "gnome-screensaver-command -l;sleep 1;xset dpms force off")
    , ((modm , xK_F9 ), spawn "sudo shutdown -r 0")
-   , ((modm , xK_F12 ), spawn "gnome-screensaver-command --lock && dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+   --, ((modm , xK_F12 ), spawn "gnome-screensaver-command --lock && dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+   , ((modm , xK_F12 ), spawn "gnome-screensaver-command --lock && sudo pm-suspend")
 
 	, ((modm, xK_v ), windows copyToAll) -- @@ Make focused window always visible
   , ((modm .|. shiftMask, xK_v ),  killAllOtherCopies) -- @@ Toggle window state back
@@ -203,10 +204,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 	, ((modm, xK_backslash), sendMessage $ Toggle FULL)
 --	  , ((modm, xK_backslash), withFocused (sendMessage . Toggle FULL))
+  , ((modm, xK_g), withFocused $ windows . (flip W.float $ W.RationalRect 0.861 0.6 0.15 0.35))
 
---  , ((modm, xK_f), withFocused $ windows . (flip W.float $ W.RationalRect 0 0 1 1))
-  , ((modm, xK_g), withFocused $ windows . (flip W.float $ W.RationalRect 0.98 (-0.65) 1 1))
+  , ((modm, xK_f), withFocused $ windows . (flip W.float $ W.RationalRect 0 0 1 1))
+  , ((modm, xK_d), withFocused $ windows . (flip W.float $ W.RationalRect 0.98 (-0.65) 1 1))
+-- how to both setd and copyToall on xK_d?? and killAllothercopies when xK_f?
 
+  , ((modm, xK_s), withFocused $ windows . (flip W.float $ W.RationalRect 0.705 (-0.1) 0.28 0.45))
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
     , ((modm .|. controlMask              , xK_minus), sendMessage Mag.MagnifyLess)
@@ -214,8 +218,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. controlMask .|. shiftMask, xK_o    ), sendMessage Mag.ToggleOn   )
     , ((modm .|. controlMask              , xK_m    ), sendMessage Mag.Toggle     )
 
-    ,((0                     , 0x1008FF11), spawn "amixer set Master 2-")
-    ,((0                     , 0x1008FF13), spawn "amixer set Master 2+")
+    ,((0                     , 0x1008FF11), spawn "amixer set Master 5-")
+    ,((0                     , 0x1008FF13), spawn "amixer set Master 5+")
+		,((0                     , 0x1008FF12), spawn "amixer -D pulse set Master toggle")
 
     ]
     ++
@@ -227,7 +232,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-[1..9], Move client to workspace N
     --
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1,xK_8,xK_9]-- .. xK_3]--xK_6]--xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1,xK_2,xK_3]-- .. xK_3]--xK_6]--xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
 
@@ -281,7 +286,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- myLayout = Mag.magnifier (Tall 1 (3/100) (1/2)) ||| tiled ||| Mirror tiled ||| Full
 --myLayout = smartBorders $ tiled ||| reflectHoriz tiled ||| Mirror tiled ||| Full ||| reflectHoriz (ThreeCol 1 (1/100) (1/2)) -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
 -- myLayout = smartBorders $ reflectHoriz (ThreeCol 1 (1/100) (1/2)) ||| Full -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
-myLayout = smartBorders $ mkToggle (single FULL) $ reflectHoriz (spiral (6/10)) ||| Mirror tiled -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
+myLayout = smartBorders $ mkToggle (single FULL) $ (spiral (6/10)) ||| Mirror tiled -- ||| ThreeColMid 1 (3/100) (1/2) ||| Full -- ||| noBorders Full
 --reflectHoriz (spiral (16/10)) ||| 
   where
     -- default tiling algorithm partitions the screen into two panes
