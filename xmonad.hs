@@ -101,19 +101,21 @@ myFocusedBorderColor = "#0000FF"
 -- Key bindings. Add, modify or remove key bindings here.
 --
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
- 
+ [
     -- launch a terminal
-    [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+     ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf) 
 
     -- launch a terminal
-    , ((modm .|. shiftMask, xK_Tab), spawn $ XMonad.terminal conf)
+    , ((modm, xK_Return), spawn $ XMonad.terminal conf)
  
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "dmenu_run -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*")
+    , ((modm,               xK_space     ), spawn "perl ~/.xmonad/dmenucab.perl | xargs -I blah dmenu_run -i -fn 'Source Code Pro for Powerline:bold:pixelsize=25' -nb '#222222' -nf '#dddddd' -sb '#dddddd' -sf '#222222' -b -p blah") -- -b for bottom
+
 --    , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*` && eval \"exec $exe\"")
 
     -- launch dmenucab (clock and battery perl script)
-    , ((modm,               xK_o     ), spawn "perl ~/.xmonad/dmenucab.perl | dmenu -fn -bitstream-*-*-*-*-*-22-*-*-*-*-*-*-*")
+--     , ((modm, xK_Tab ), spawn "perl ~/.xmonad/dmenucab.perl | dmenu -fn -bitstream-*-*-*-*-*-22-*-170-*-*-*-*-*")
+  --  , ((modm, xK_o ), spawn "perl ~/.xmonad/dmenucab.perl | dmenu -fn -bitstream-*-*-*-*-*-22-*-170-*-*-*-*-*")
  
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -122,7 +124,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_c     ), kill)
  
      -- Rotate through the available layout algorithms
-    , ((modm,               xK_space ), sendMessage NextLayout)
+    , ((modm,               xK_Tab ), sendMessage NextLayout)
  
     --  Reset the layouts on the current workspace to default
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
@@ -131,7 +133,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_n     ), refresh)
  
     -- Move focus to the next window
-    , ((modm,               xK_Tab   ), windows W.focusDown)
+   -- , ((modm,               xK_Tab   ), windows W.focusDown)
  
     -- Move focus to the next window
     , ((modm,               xK_j     ), windows W.focusDown)
@@ -210,7 +212,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
   , ((modm, xK_d), withFocused $ windows . (flip W.float $ W.RationalRect 0.98 (-0.65) 1 1))
 -- how to both setd and copyToall on xK_d?? and killAllothercopies when xK_f?
 
-  , ((modm, xK_s), withFocused $ windows . (flip W.float $ W.RationalRect 0.705 (-0.1) 0.28 0.45))
+  , ((modm, xK_s), withFocused $ windows . (flip W.float $ W.RationalRect 0.685 (-0.1) 0.30 0.45))
 
     , ((modm .|. controlMask              , xK_plus ), sendMessage Mag.MagnifyMore)
     , ((modm .|. controlMask              , xK_minus), sendMessage Mag.MagnifyLess)
